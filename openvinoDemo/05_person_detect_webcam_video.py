@@ -44,7 +44,9 @@ while True:
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
             sharp_person = cv2.filter2D(person, -1, kernel)
             pixelWidth = endX - startX 
-            distanceFromCamera = distance_to_camera(7, 589.2857, pixelWidth)
+            #adjust focal length for each camera
+            focalLength = 589.2857
+            distanceFromCamera = distance_to_camera(7, focalLength, pixelWidth)
             #adds label as distance from camera (in CM)
             label = "{:.2f}".format(distanceFromCamera)
             #"{}: {:.2f}%".format(CLASSES[idx], confidence * 100)

@@ -52,6 +52,7 @@ while True:
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
             sharp_person = cv2.filter2D(person, -1, kernel)
             focalLength = 900
+            width = endX - startX
             distance = distanceToCamera(CLASSES[idx], focalLength, width))
             label = "{}: {}".format(CLASSES[idx], distance)
             cv2.rectangle(image, (startX, startY), (endX, endY),
@@ -59,7 +60,6 @@ while True:
             y = startY - 15 if startY - 15 > 15 else startY + 15
             cv2.putText(image, label, (startX, y),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.3, COLORS[idx], 1)
-            width = endX - startX
 
 
     cv2.imshow("Output", image)

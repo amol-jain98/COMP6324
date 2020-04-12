@@ -1,2 +1,7 @@
 # COMP6324
-COMP6324 IOT Final Solution 
+
+Run python3 05_person_detect_webcam_video.py in the VM
+
+Ensure that Devices->Webcam has an input
+
+Note: Focal Length is different for each camera

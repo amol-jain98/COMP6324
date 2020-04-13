@@ -8,7 +8,7 @@ def initializationMeasurements(objectIdentity):
     KNOWN_WIDTH = 0
     if objectIdentity == 'car':
         #in cms
-        KNOWN_WIDTH=7
+        KNOWN_WIDTH=185
     if objectIdentity == 'person':
         KNOWN_WIDTH=30
     return KNOWN_WIDTH

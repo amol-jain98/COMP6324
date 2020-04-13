@@ -41,7 +41,8 @@ while True:
             person = person[startY:endY, startX:endX]
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
             sharp_person = cv2.filter2D(person, -1, kernel)
-            focalLength = 589
+            #change focal length for each camera
+            focalLength = 900
             width = endX - startX
             distance = distanceToCamera(CLASSES[idx], focalLength, width)
             if (firstLoop == False):
@@ -50,8 +51,7 @@ while True:
             travelledDistance = startDistance - distance
             speed = travelledDistance/(total_time)
             print('distance, Travelled, start', distance, travelledDistance, startDistance)
-            label = "Hi"
-            #label = "{}: {:.2f}cm, {:.2f}cm/s".format(CLASSES[idx], distance, travelledDistance)
+            label = "{}: {:.2f}cm, {:.2f}cm/s".format(CLASSES[idx], distance, travelledDistance)
             cv2.rectangle(image, (startX, startY), (endX, endY),
                 COLORS[idx], 2)
             y = startY - 15 if startY - 15 > 15 else startY + 15

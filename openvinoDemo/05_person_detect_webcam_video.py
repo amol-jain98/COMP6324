@@ -53,7 +53,7 @@ while True:
             sharp_person = cv2.filter2D(person, -1, kernel)
             focalLength = 900
             width = endX - startX
-            distance = distanceToCamera(CLASSES[idx], focalLength, width))
+            distance = distanceToCamera(CLASSES[idx], focalLength, width)
             label = "{}: {}".format(CLASSES[idx], distance)
             cv2.rectangle(image, (startX, startY), (endX, endY),
                 COLORS[idx], 2)

@@ -3,13 +3,9 @@ import argparse
 import cv2
 import time
 from distance import *
+from classes import *
 
 webcam = cv2.VideoCapture(0)
-
-CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
-	"bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
-	"dog", "horse", "motorbike", "person", "pottedplant", "sheep",
-	"sofa", "train", "tvmonitor"]
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 print("loading Caffe SSD MobileNet Model...")
@@ -34,7 +30,7 @@ while True:
     for i in np.arange(0, detections.shape[2]):
         confidence = detections[0, 0, i, 2]
         idx = int(detections[0, 0, i, 1])
-        if (confidence > 0.2) and (CLASSES[idx] == 'car'):
+        if (confidence > 0.2) and (CLASSES[idx] == 'person'):
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
             person = image.copy()
@@ -49,8 +45,8 @@ while True:
                 startDistance = distance
                 firstLoop = True
             travelledDistance = startDistance - distance
-            speed = travelledDistance/(total_time)
-            print('distance, Travelled, start', distance, travelledDistance, startDistance)
+            speed = abs(travelledDistance/(total_time))
+            #print('distance, Travelled, start, speed', distance, travelledDistance, startDistance, speed)
             label = "{}: {:.2f}cm, {:.2f}cm/s".format(CLASSES[idx], distance, travelledDistance)
             cv2.rectangle(image, (startX, startY), (endX, endY),
                 COLORS[idx], 2)

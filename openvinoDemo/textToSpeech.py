@@ -1,7 +1,8 @@
 import subprocess
 #import pyttsx3
 
-# This file creates wav files required for hazard notification
+# This script creates wav files required for hazard notification
+# Creates 3 folders: objectsWav, rangesWav, warningsWav
 
 # requires pyttsx3 pip3 installed
 # speaks here
@@ -12,7 +13,7 @@ import subprocess
 #    engine.stop()
 
 
-# requires libspeak and espeak installed
+# requires libespeak and espeak installed
 # sudo apt-get install espeak
 # sudo apt-get install -y libespeak-dev
 # converts to wav file
@@ -23,26 +24,26 @@ def makeFolder(foldername):
     subprocess.call(["mkdir", foldername])
 
 def objectWavFiles():
-    objects=["bicycle", "bird", "boat",
-	    "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
-	    "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
-	    "sofa", "train", "tvmonitor"]
+    objects=["bicycle", "bird", "boat","bottle", "bus", "car", 
+	     "cat", "chair", "cow", "diningtable", "dog", 
+	     "horse", "motorbike", "person", "pottedplant", 
+	     "sheep", "sofa", "train", "tvmonitor"]
 
-    makeFolder("objects")
+    makeFolder("objectsWav")
     for object in objects:
-        textToWav(object, "objects")
+        textToWav(object, "objectsWav")
 
 def rangeWavFiles():
     ranges=["1", "2", "3", "4"]
-    makeFolder("ranges")
+    makeFolder("rangesWav")
     for range in ranges:
-        textToWav(range+" Metres Away", "ranges")
+        textToWav(range+" Metres Away", "rangesWav")
         
 def warningWavFiles():
     warnings=["Incoming", "Warning", "Hazard", "Approaching"]
-    makeFolder("warning")
+    makeFolder("warningWav")
     for warning in warnings:
-        textToWav(warning, "warning")     
+        textToWav(warning, "warningWav")     
     
 objectWavFiles()
 rangeWavFiles()

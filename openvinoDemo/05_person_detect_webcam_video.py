@@ -3,7 +3,6 @@ import argparse
 import cv2
 import time
 from time import sleep
-from timeout import timeout
 
 def distanceToCamera(identity,focalLength, width):
 	# compute and return the distance from the maker to the camera

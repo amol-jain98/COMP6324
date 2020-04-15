@@ -2,6 +2,8 @@ import numpy as np
 import argparse
 import cv2
 import time
+from time import sleep
+from timeout import timeout
 
 def distanceToCamera(identity,focalLength, width):
 	# compute and return the distance from the maker to the camera
@@ -31,7 +33,9 @@ iterations = 1
 total_time = 0.0
 wflag = 0
 while True:
+    sleep(0.3)
     chk, image = webcam.read()
+    sleep(0.2)
     (h, w) = image.shape[:2]
     blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5)
     net.setInput(blob)
@@ -42,15 +46,21 @@ while True:
     #print('avg = ', end-start)
     iterations = iterations + 1
     for i in np.arange(0, detections.shape[2]):
+        print("0")
         confidence = detections[0, 0, i, 2]
+        print("1")
         idx = int(detections[0, 0, i, 1])
-        if (confidence > 0.2) and (CLASSES[idx] == 'person' or CLASSES[idx] == 'car'):
+        if (confidence > 0.4) and (CLASSES[idx] == 'person' or CLASSES[idx] == 'car' or CLASSES[idx] == 'bicycle' or CLASSES[idx] == 'bus' or CLASSES[idx] == 'train' or CLASSES[idx] == 'motorbike'):
+            #or 
+            #(confidence > 0.6 and (CLASSES[idx] == 'bottle' or 
+            #CLASSES[idx] == 'chair' or CLASSES[idx] == 'sofa' or CLASSES[idx] == 'diningtable'):
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
             person = image.copy()
             person = person[startY:endY, startX:endX]
-            kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
-            sharp_person = cv2.filter2D(person, -1, kernel)
+            kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
+
+#            sharp_person = cv2.filter2D(person, -1, kernel)
             focalLength = 900
             width = endX - startX
             distance = distanceToCamera(CLASSES[idx], focalLength, width)
@@ -60,15 +70,9 @@ while True:
             y = startY - 15 if startY - 15 > 15 else startY + 15
             cv2.putText(image, label, (startX, y),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.3, COLORS[idx], 1)
-
-
     cv2.imshow("Output", image)
     key = cv2.waitKey(1) & 0xFF
     if (key == ord('q')):
         break
                
 cv2.destroyAllWindows()
-
-
-
- 

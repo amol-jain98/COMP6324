@@ -13,4 +13,6 @@ def initializationMeasurements(objectIdentity):
         KNOWN_WIDTH=30
     return KNOWN_WIDTH
     
+def approachingUser(curDist, startDist):
+    return (True if curDist < startDist - 10 else False)
 

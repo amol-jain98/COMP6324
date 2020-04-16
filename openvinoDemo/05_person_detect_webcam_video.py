@@ -4,6 +4,7 @@ import cv2
 import time
 from distance import *
 from classes import *
+from warning import *
 
 webcam = cv2.VideoCapture(0)
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
@@ -47,6 +48,8 @@ while True:
             travelledDistance = startDistance - distance
             speed = abs(travelledDistance/(total_time))
             #print('distance, Travelled, start, speed', distance, travelledDistance, startDistance, speed)
+            #sendWarning(approachingUser(distance, startDistance), distance)
+            print(approachingUser(distance, startDistance))
             label = "{}: {:.2f}cm, {:.2f}cm/s".format(CLASSES[idx], distance, travelledDistance)
             cv2.rectangle(image, (startX, startY), (endX, endY),
                 COLORS[idx], 2)

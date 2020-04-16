@@ -51,7 +51,14 @@ while True:
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
-            
+            outfile = "{}Class={}.jpg".format(i,CLASSES[idx])
+            cv2.imwrite(outfile, person)
+            base64file = "{}Class={}.xml".format(i,CLASSES[idx])
+            with open(outfile, "rb") as imageFile:
+                string = base64.b64encode(imageFile.read())
+            with open(base64file,"wb") as f:
+                f.write(string)
+                f.close()
             focalLength = 900
             width = endX - startX
             distance = distanceToCamera(CLASSES[idx], focalLength, width)

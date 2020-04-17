@@ -2,10 +2,15 @@ import numpy as np
 import argparse
 import cv2
 import time
+import os
+from datetime import datetime
+
+from converter import *
 from distance import *
 from classes import *
 from warning import *
 from time import sleep
+
 
 webcam = cv2.VideoCapture(0)
 # Allow time for the camera to initialise
@@ -37,7 +42,7 @@ while True:
     
     # Keep a count of the number of objects in the image, to be used later for TTS
     objectCount = {'person': 0, 'car': 0, 'bicycle': 0, 'bus': 0, 'motorbike': 0, 'train': 0}
-    
+    now = datetime.now().strftime("%Y-%m-%d, %H:%M")
     for i in np.arange(0, detections.shape[2]):
         confidence = detections[0, 0, i, 2]
         idx = int(detections[0, 0, i, 1])
@@ -51,7 +56,14 @@ while True:
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
-            
+
+            objectDetected = image.copy()
+            objectDetected = objectDetected[startY:endY, startX:endX]
+            outfile = "{}{}{}.jpg".format(i,CLASSES[idx],now)            
+            cv2.imwrite(outfile, objectDetected)
+            convertfile(i,CLASSES[idx],now)
+            os.remove(outfile)
+
             focalLength = 900
             width = endX - startX
             distance = distanceToCamera(CLASSES[idx], focalLength, width)
@@ -88,4 +100,3 @@ while True:
         break
                
 cv2.destroyAllWindows()
-

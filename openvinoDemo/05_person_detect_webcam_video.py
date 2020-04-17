@@ -5,7 +5,6 @@ import time
 from distance import *
 from classes import *
 from warning import *
-from converter import *
 from time import sleep
 
 webcam = cv2.VideoCapture(0)
@@ -52,11 +51,7 @@ while True:
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
-
-            outfile = "{}Class={}.jpg".format(i,CLASSES[idx])            
-            cv2.imwrite(outfile, person)
-            convertfile(i,CLASSES[idx])
-
+            
             focalLength = 900
             width = endX - startX
             distance = distanceToCamera(CLASSES[idx], focalLength, width)

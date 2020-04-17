@@ -54,8 +54,11 @@ while True:
             (startX, startY, endX, endY) = box.astype("int")
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
 
+
+            objectDetected = image.copy()
+            objectDetected = objectDetected[startY:endY, startX:endX]
             outfile = "{}Class={}.jpg".format(i,CLASSES[idx])            
-            cv2.imwrite(outfile, person)
+            cv2.imwrite(outfile, objectDetected)
             convertfile(i,CLASSES[idx])
             os.remove(outfile)
 

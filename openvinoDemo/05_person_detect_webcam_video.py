@@ -24,7 +24,6 @@ iterations = 1
 totalTime = 0.0
 wflag = 0
 firstLoop = False
-now = datetime.now().strftime("%Y-%m-%d, %H:%M")
 
 while True:
     sleep(0.2)
@@ -43,7 +42,7 @@ while True:
     
     # Keep a count of the number of objects in the image, to be used later for TTS
     objectCount = {'person': 0, 'car': 0, 'bicycle': 0, 'bus': 0, 'motorbike': 0, 'train': 0}
-    
+    now = datetime.now().strftime("%Y-%m-%d, %H:%M")
     for i in np.arange(0, detections.shape[2]):
         confidence = detections[0, 0, i, 2]
         idx = int(detections[0, 0, i, 1])

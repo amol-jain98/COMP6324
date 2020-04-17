@@ -3,11 +3,14 @@ import argparse
 import cv2
 import time
 import os
+from datetime import datetime
+
 from converter import *
 from distance import *
 from classes import *
 from warning import *
 from time import sleep
+
 
 webcam = cv2.VideoCapture(0)
 # Allow time for the camera to initialise
@@ -21,6 +24,7 @@ iterations = 1
 totalTime = 0.0
 wflag = 0
 firstLoop = False
+now = datetime.now().strftime("%Y-%m-%d, %H:%M")
 
 while True:
     sleep(0.2)
@@ -54,10 +58,9 @@ while True:
             (startX, startY, endX, endY) = box.astype("int")
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
 
-
             objectDetected = image.copy()
             objectDetected = objectDetected[startY:endY, startX:endX]
-            outfile = "{}Class={}.jpg".format(i,CLASSES[idx])            
+            outfile = "{}{}{}.jpg".format(i,CLASSES[idx],now)            
             cv2.imwrite(outfile, objectDetected)
             convertfile(i,CLASSES[idx])
             os.remove(outfile)

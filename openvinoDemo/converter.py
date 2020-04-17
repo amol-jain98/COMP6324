@@ -1,8 +1,7 @@
 import base64
 from datetime import datetime
 
-now = datetime.now().strftime("%Y-%m-%d, %H:%M")
-def convertfile(count, classIdentity):
+def convertfile(count, classIdentity, now):
     outfile = "{}{}{}.jpg".format(count, classIdentity, now)
     base64file = "{}{}{}.xml".format(count, classIdentity, now)
     with open(outfile, "rb") as imageFile:

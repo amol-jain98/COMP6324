@@ -62,7 +62,7 @@ while True:
             objectDetected = objectDetected[startY:endY, startX:endX]
             outfile = "{}{}{}.jpg".format(i,CLASSES[idx],now)            
             cv2.imwrite(outfile, objectDetected)
-            convertfile(i,CLASSES[idx])
+            convertfile(i,CLASSES[idx],now)
             os.remove(outfile)
 
             focalLength = 900

@@ -45,9 +45,9 @@ async def main():
         
         # Keep a count of the number of objects in the image, to be used later for TTS
         hazardCount = 0
-        objectCount = {}
+        objectCount = {'person' : 0 , 'car' : 0 , 'bicycle' : 0 , 'motorbike':0,'train' :0 , 'bus':0}
         # Log to send out to azure
-        log = {'date': datetime.now().strftime("%d/%m/%Y"), 'time': datetime.now().strftime("%H:%M:%S"), 'images':[], 'objectCount': objectCount, 'hazardCount': hazardCount}
+        log = {'date': datetime.now().strftime("%d/%m/%Y"), 'time': datetime.now().strftime("%H:%M:%S"), 'images':[], 'person' : 0 , 'car' : 0 , 'bicycle' : 0 , 'motorbike':0,'train' :0 , 'bus':0,'hazardCount': hazardCount}
             
         for i in np.arange(0, detections.shape[2]):
             confidence = detections[0, 0, i, 2]

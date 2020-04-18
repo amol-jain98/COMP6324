@@ -45,7 +45,7 @@ async def main():
         
         # Keep a count of the number of objects in the image, to be used later for TTS
         hazardCount = 0
-        objectCount = {'person' : 0 , 'car' : 0 , 'bicycle' : 0 , 'motorbike':0,'train' :0 , 'bus':0}
+        objectCount = {newList : 0 for newList in CLASSES}
         # Log to send out to azure
         log = {'date': datetime.now().strftime("%d/%m/%Y"), 'time': datetime.now().strftime("%H:%M:%S"), 'images':[],'hazardCount': hazardCount}
         log.update(objectCount)

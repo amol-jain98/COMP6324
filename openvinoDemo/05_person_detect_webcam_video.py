@@ -45,7 +45,7 @@ async def main():
         
         # Keep a count of the number of objects in the image, to be used later for TTS
         hazardCount = 0
-        
+        objectCount = {}
         # Log to send out to azure
         log = {'date': datetime.now().strftime("%d/%m/%Y"), 'time': datetime.now().strftime("%H:%M:%S"), 'images':[], 'objectCount': objectCount, 'hazardCount': hazardCount}
             
@@ -77,7 +77,7 @@ async def main():
                 #print('distance, Travelled, start', distance, travelledDistance, startDistance)
                 
                 # Objects detected in frame
-#                 log['objectCount'][object] += 1
+                objectCount[object] += 1
                 
                 #TODO: change to warning function
                 if (distance < 250):
@@ -107,7 +107,7 @@ async def main():
             await device_client.send_message(data)
 
         
-        if (any(log['objectCount'].values())):
+        if (any(objectCount.values())):
             if (len(log_buffer) < 34):
                 log_buffer.append(log)
             else:

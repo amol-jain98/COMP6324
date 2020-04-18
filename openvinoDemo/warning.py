@@ -1,5 +1,7 @@
 from distance import *
 from pydub import *
+import time
+from datetime import datetime
 
 #creates custom warning msg
 def makeWarningMsg(objectCount, obj, distanceFromCamera):
@@ -32,6 +34,8 @@ def resetWarnings(warningCount):
 # $ sudo apt-get install python-pip
 # $ pip3 install pydub
 def combineWavFiles(object, objectCount, distanceAway):
+    now = datetime.now().strftime("%Y-%m-%d,%H:%M")
+    
     #eg: warning 3 cars detected 5 metres away
     warning = AudioSegment.from_wav("./warningWav/Warning.wav")
     detected = AudioSegment.from_wav("./warningWav/Detected.wav")
@@ -42,5 +46,5 @@ def combineWavFiles(object, objectCount, distanceAway):
     distance = AudioSegment.from_wav("./numbersWav/" + str(distanceAway) + ".wav")
 
     customMsg = warning + objCount + obj + detected + distance + metresAway
-    customMsg.export("customWarning.wav", format="wav")
+    customMsg.export("customWarning" + now + ".wav", format="wav")
         

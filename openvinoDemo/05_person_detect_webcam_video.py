@@ -72,21 +72,17 @@ while True:
                 objectCount[object] += 1
             label = "{}: {:.2f}cm".format(CLASSES[idx], distance)
             totalHazards = totalHazardCount(objectCount)
-            print("obj is", object)
+
             #send warning when obj is detected at less than 10m away & only send once for each threshold
             if((distance <= 1000) and (warningSent[str(findThreshold(distance))] == False)):
                 sendWarning(distance, object, warningSent, objectCount)
                 
-            #print("total", totalHazards, "hazards detected")
             
             #send warning when another obj is detected 
             if((distance <= 1000) and (prevTotalHazards > 0 ) and (totalHazards > prevTotalHazards)):
-                print(object)
-                print("total", totalHazards, "prevTotal", prevTotalHazards)
                 sendWarning(distance, object, warningSent, objectCount)
                 
             #TODO:
-            #make custom wav file
             #send to bluetooth device
 
             cv2.rectangle(image, (startX, startY), (endX, endY),

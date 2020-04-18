@@ -83,7 +83,7 @@ async def main():
                 if (distance < 250):
                     # Number of hazards detected in frame
                     log[object] += 1
-                    log[hazardCount] += 1
+                    log['hazardCount'] += 1
                   
                 label = "{}: {:.2f}cm, {:.2f}cm/s".format(CLASSES[idx], distance, travelledDistance)
 

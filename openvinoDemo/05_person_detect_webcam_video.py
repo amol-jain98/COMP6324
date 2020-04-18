@@ -11,6 +11,17 @@ from time import sleep
 from datetime import datetime
 from azure.iot.device.aio import IoTHubDeviceClient
 
+connection_string = "HostName=IoTGroup1StandardHub.azure-devices.net;DeviceId=dev001;SharedAccessKey=otK31C84fisZusMhtB4hQz4+EuMBcTxQCiJM/sIbbgU=" # The azure device connection string
+
+
+def confident(object, confidence):
+    return (confidence > 0.4 and (object is 'person' or object is 'car' or object is 'bicycle')) or (confidence > 0.5 and object is 'motorbike') or (confidence > 0.7 and (object is 'train' or object is 'bus')
+      
+
+async def initialiseIoTDevice():
+    device_client = IoTHubDeviceClient.create_from_connection_string(connection_string)
+    await device_client.connect()
+
 async def main():
     webcam = cv2.VideoCapture(0)
     # Allow time for the camera to initialise
@@ -19,9 +30,7 @@ async def main():
     COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
     net = cv2.dnn.readNetFromCaffe('MobileNetSSD_deploy.prototxt.txt', 'MobileNetSSD_deploy.caffemodel')
-    connection_string = "HostName=IoTGroup1StandardHub.azure-devices.net;DeviceId=dev001;SharedAccessKey=otK31C84fisZusMhtB4hQz4+EuMBcTxQCiJM/sIbbgU=" # The azure device connection string
-    device_client = IoTHubDeviceClient.create_from_connection_string(connection_string)
-    await device_client.connect()
+    initialiseAzure()
     log_buffer = []
     iterations = 1
     totalTime = 0.0
@@ -54,7 +63,7 @@ async def main():
             idx = int(detections[0, 0, i, 1])
             
             object = CLASSES[idx]
-            if (confidence > 0.4 and (object == 'person' or object == 'car' or object == 'bicycle')) or (confidence > 0.5 and object == 'motorbike') or (confidence > 0.7 and (object == 'train' or object == 'bus')):
+            if (confident(object, confidence):
             #or 
                 #(confidence > 0.6 and (CLASSES[idx] == 'bottle' or 
                 #CLASSES[idx] == 'chair' or CLASSES[idx] == 'sofa' or CLASSES[idx] == 'diningtable'):
@@ -65,7 +74,7 @@ async def main():
                 
                 focalLength = 900
                 width = endX - startX
-                distance = distanceToCamera(CLASSES[idx], focalLength, width)
+                distance = distanceToCamera(object, focalLength, width)
                 
                 #store distance of obj from camera when first detected
                 if (firstLoop == False):
@@ -84,7 +93,7 @@ async def main():
                     # Number of hazards detected in frame
                     log['hazardCount'] += 1
                   
-                label = "{}: {:.2f}cm, {:.2f}cm/s".format(CLASSES[idx], distance, travelledDistance)
+                label = "{}: {:.2f}cm, {:.2f}cm/s".format(object, distance, travelledDistance)
 
                 #TODO: Check distance, then if within some threshold, play soundbyte
                 
@@ -121,6 +130,8 @@ async def main():
         
                    
     cv2.destroyAllWindows()
+    
+
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()

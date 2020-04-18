@@ -58,6 +58,7 @@ while True:
             (startX, startY, endX, endY) = box.astype("int")
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
 
+            '''
             #for base64
             objectDetected = image.copy()
             objectDetected = objectDetected[startY:endY, startX:endX]
@@ -65,6 +66,7 @@ while True:
             cv2.imwrite(outfile, objectDetected)
             convertfile(i,CLASSES[idx],now)
             os.remove(outfile)
+            '''
 
             focalLength = 900
             width = endX - startX
@@ -78,16 +80,16 @@ while True:
 
             #send warning when obj is detected at less than 10m away & only send once for each threshold
             if((distance <= 1000) and (warningSent[str(findThreshold(distance))] == False)):
-                sendWarning(distance, object, warningSent)
+                sendWarning(distance, object, warningSent, objectCount)
                 
             #print("total", totalHazards, "hazards detected")
             
             #send warning when another obj is detected 
             if((prevTotalHazards > 0 ) and (totalHazards > prevTotalHazards)):
-                sendWarning(distance, object, warningSent)
+                print(object)
+                sendWarning(distance, object, warningSent, objectCount)
                 
             #TODO:
-            #make custom text for detected hazards
             #make custom wav file
             #send to bluetooth device
 

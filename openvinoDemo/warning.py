@@ -1,15 +1,16 @@
 from distance import *
 
-#creates custom warning msg using sound files
-def makeWarningMsg(obj, quantity, distanceFromCamera):
-    return 0
+#creates custom warning msg
+def makeWarningMsg(objectCount, obj, distanceFromCamera):
+    #eg: warning 3 cars detected 5 metres away
+    print("warning", objectCount[obj], obj, "detected", distanceFromCamera, "metres away" )
+ 
+#send warning 
+def sendWarning(distanceFromUser, obj, warningCount, objectCount):
+    distance = findThreshold(distanceFromUser)
+    makeWarningMsg(objectCount, obj, distance)
+    warningCount[str(distance)] = True
     
-#send warning to user 
-#send warning based on w
-def sendWarning(distanceFromUser, obj, warningCount):
-    print("obstacle in", findThreshold(distanceFromUser), "cm")
-    warningCount[str(findThreshold(distanceFromUser))] = True
-
 #defines hazard thresholds
 def findThreshold(distanceFromUser):
     if (distanceFromUser <= 100):

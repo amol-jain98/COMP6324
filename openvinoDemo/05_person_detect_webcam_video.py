@@ -44,8 +44,7 @@ async def main():
         iterations = iterations + 1
         
         # Keep a count of the number of objects in the image, to be used later for TTS
-        objectCount = {'person': 0, 'car': 0, 'bicycle': 0, 'bus': 0, 'motorbike': 0, 'train': 0}
-        hazardCount = {'person': 0, 'car': 0, 'bicycle': 0, 'bus': 0, 'motorbike': 0, 'train': 0}
+        hazardCount = 0
         
         # Log to send out to azure
         log = {'date': datetime.now().strftime("%d/%m/%Y"), 'time': datetime.now().strftime("%H:%M:%S"), 'images':[], 'objectCount': objectCount, 'hazardCount': hazardCount}
@@ -78,13 +77,13 @@ async def main():
                 #print('distance, Travelled, start', distance, travelledDistance, startDistance)
                 
                 # Objects detected in frame
-                log['objectCount'][object] += 1
+#                 log['objectCount'][object] += 1
                 
                 #TODO: change to warning function
                 if (distance < 250):
                     # Number of hazards detected in frame
-                    log['hazardCount'][object] += 1
-                  
+                    log[object] += 1
+                    hazardCount++
                   
                 label = "{}: {:.2f}cm, {:.2f}cm/s".format(CLASSES[idx], distance, travelledDistance)
 
@@ -100,7 +99,7 @@ async def main():
                 #TODO: Add actual image data
                 log["images"].append("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4QPMRXhpZgAASUkqAAgAAAAIAA4BAgCVAAAAbgAAAA8BAgAGAAAABAEAABABAgAPAAAACgEAADsBAgA")
         
-                log["hazard"] = sum(hazardCount.values())
+                log["hazard"] = sum(hazardCount)
         cv2.imshow("Output", image)
         key = cv2.waitKey(1) & 0xFF
         

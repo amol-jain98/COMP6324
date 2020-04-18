@@ -1,9 +1,11 @@
 from distance import *
+from pydub import *
 
 #creates custom warning msg
 def makeWarningMsg(objectCount, obj, distanceFromCamera):
     #eg: warning 3 cars detected 5 metres away
-    print("warning", objectCount[obj], obj, "detected", distanceFromCamera, "metres away" )
+    text = ("warning", objectCount[obj], obj, "detected", distanceFromCamera, "metres away" )
+    combineWavFiles(obj, objectCount[obj], distanceFromCamera)
  
 #send warning 
 def sendWarning(distanceFromUser, obj, warningCount, objectCount):
@@ -26,7 +28,19 @@ def findThreshold(distanceFromUser):
 def resetWarnings(warningCount):
     for warning in warningCount:
         warningCount[warning] = False
-           
-#send warning when warning has not been sent
-#reset warning to false when no obstacles are detected 
-#when new obj is detected, send warning regardless of what the dictionary says
+
+# $ sudo apt-get install python-pip
+# $ pip3 install pydub
+def combineWavFiles(object, objectCount, distanceAway):
+    #eg: warning 3 cars detected 5 metres away
+    warning = AudioSegment.from_wav("./warningWav/Warning.wav")
+    detected = AudioSegment.from_wav("./warningWav/Detected.wav")
+    metresAway = AudioSegment.from_wav("./warningWav/Metres Away.wav")
+    
+    objCount = AudioSegment.from_wav("./numbersWav/" + str(objectCount) + ".wav")
+    obj = AudioSegment.from_wav("./objectsWav/" + object + ".wav")
+    distance = AudioSegment.from_wav("./numbersWav/" + str(distanceAway) + ".wav")
+
+    customMsg = warning + objCount + obj + detected + distance + metresAway
+    customMsg.export("customWarning.wav", format="wav")
+        

@@ -4,13 +4,11 @@ import cv2
 import time
 import os
 from datetime import datetime
-
 from converter import *
 from distance import *
 from objects import *
 from warning import *
 from time import sleep
-
 
 webcam = cv2.VideoCapture(0)
 # Allow time for the camera to initialise
@@ -53,11 +51,10 @@ while True:
         idx = int(detections[0, 0, i, 1])
         object = CLASSES[idx]        
         if (inConfidenceRange(object, confidence)):
-            detected = True
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
-       
+            
             #for base64
             objectDetected = image.copy()
             objectDetected = objectDetected[startY:endY, startX:endX]
@@ -65,7 +62,7 @@ while True:
             cv2.imwrite(outfile, objectDetected)
             convertfile(i,CLASSES[idx],now)
             os.remove(outfile)
-
+            
             focalLength = 900
             width = endX - startX
             distance = distanceToCamera(CLASSES[idx], focalLength, width)
@@ -75,7 +72,7 @@ while True:
                 objectCount[object] += 1
             label = "{}: {:.2f}cm".format(CLASSES[idx], distance)
             totalHazards = totalHazardCount(objectCount)
-
+            print("obj is", object)
             #send warning when obj is detected at less than 10m away & only send once for each threshold
             if((distance <= 1000) and (warningSent[str(findThreshold(distance))] == False)):
                 sendWarning(distance, object, warningSent, objectCount)
@@ -83,8 +80,9 @@ while True:
             #print("total", totalHazards, "hazards detected")
             
             #send warning when another obj is detected 
-            if((prevTotalHazards > 0 ) and (totalHazards > prevTotalHazards)):
+            if((distance <= 1000) and (prevTotalHazards > 0 ) and (totalHazards > prevTotalHazards)):
                 print(object)
+                print("total", totalHazards, "prevTotal", prevTotalHazards)
                 sendWarning(distance, object, warningSent, objectCount)
                 
             #TODO:
@@ -97,10 +95,8 @@ while True:
             cv2.putText(image, label, (startX, y),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.3, COLORS[idx], 1)  
             
-    #print("BEFORE WARNING", warningSent)
     if(totalHazards == 0):
         resetWarnings(warningSent)
-    #print("AFTER WARNING", warningSent)
     
     #record no. of hazards from previous img
     prevTotalHazards = totalHazards

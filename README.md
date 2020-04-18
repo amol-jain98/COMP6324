@@ -6,6 +6,7 @@ Ensure that Devices->Webcam has an input
 
 Note: Focal Length is different for each camera
 
+
 ## Packages required for:
 
 ### textToSpeech.py 

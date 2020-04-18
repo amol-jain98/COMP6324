@@ -57,8 +57,7 @@ while True:
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
             kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
-
-            '''
+       
             #for base64
             objectDetected = image.copy()
             objectDetected = objectDetected[startY:endY, startX:endX]
@@ -66,7 +65,6 @@ while True:
             cv2.imwrite(outfile, objectDetected)
             convertfile(i,CLASSES[idx],now)
             os.remove(outfile)
-            '''
 
             focalLength = 900
             width = endX - startX

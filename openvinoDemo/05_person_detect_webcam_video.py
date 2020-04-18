@@ -47,7 +47,8 @@ async def main():
         hazardCount = 0
         objectCount = {'person' : 0 , 'car' : 0 , 'bicycle' : 0 , 'motorbike':0,'train' :0 , 'bus':0}
         # Log to send out to azure
-        log = {'date': datetime.now().strftime("%d/%m/%Y"), 'time': datetime.now().strftime("%H:%M:%S"), 'images':[], 'person' : 0 , 'car' : 0 , 'bicycle' : 0 , 'motorbike':0,'train' :0 , 'bus':0,'hazardCount': hazardCount}
+        log = {'date': datetime.now().strftime("%d/%m/%Y"), 'time': datetime.now().strftime("%H:%M:%S"), 'images':[],'hazardCount': hazardCount}
+        log.update(objectCount)
             
         for i in np.arange(0, detections.shape[2]):
             confidence = detections[0, 0, i, 2]

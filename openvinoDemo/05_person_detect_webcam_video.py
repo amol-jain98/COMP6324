@@ -82,7 +82,6 @@ async def main():
                 #TODO: change to warning function
                 if (distance < 250):
                     # Number of hazards detected in frame
-                    log[object] += 1
                     log['hazardCount'] += 1
                   
                 label = "{}: {:.2f}cm, {:.2f}cm/s".format(CLASSES[idx], distance, travelledDistance)
@@ -117,7 +116,7 @@ async def main():
                 print("sent to azure")     
             
         if (key == ord('q')):
-            device_client.disconnect()
+            await device_client.disconnect()
             break
         
                    

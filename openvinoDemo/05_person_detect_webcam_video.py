@@ -71,9 +71,9 @@ async def main():
                 # For image encoding
                 objectDetected=image.copy()
                 objectDetected=objectDetected[startY:endY, startX:endX]
-                outfile="{}{}{}.jpg".format(i, CLASSES[idx], now)
+                outfile="{}{}{}.jpg".format(i, CLASSES[idx], log['time'])
                 cv2.imwrite(outfile, objectDetected)
-                convertfile(i, CLASSES[idx], now)
+                convertfile(i, CLASSES[idx], log['time'])
                 os.remove(outfile)
 
                 focalLength=900
@@ -81,14 +81,14 @@ async def main():
                 distance=distanceToCamera(object, focalLength, width)
                 
                 # Count the number of objects in the frame
-                log['objectCount'] += 1            
+                log['objectCount'][object] += 1            
 
                 # Add detection to our count of objects if object is near
                 if (distance < 1000):
                     hazardCount[object] += 1
                     
                 label="{}: {:.2f}cm".format(CLASSES[idx], distance)
-                log['hazardCount'] = sum(hazardCount.keys())
+                log['hazardCount'] = sum(hazardCount.values())
 
                 # send warning when obj is detected at less than 10m away & only send once for each threshold
                 if((distance <= 1000) and (warningSent[str(findThreshold(distance))] == False)):
@@ -97,7 +97,7 @@ async def main():
                 # send warning when another obj is detected
                 if((distance <= 1000) and (prevTotalHazards > 0) and (log['hazardCount'] > prevTotalHazards)):
                     sendWarning(distance, object, warningSent, hazardCount)
-
+                    
                 # TODO: change to warning function
                 if (distance < 250):
                     # Number of hazards detected in frame

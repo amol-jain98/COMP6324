@@ -4,7 +4,9 @@ import cv2
 import time
 import asyncio
 import json
+import base64
 import os
+import io
 from converter import *
 from distance import *
 from objects import *
@@ -15,6 +17,7 @@ from azure.iot.device.aio import IoTHubDeviceClient
 
 # The azure device connection string
 connection_string = "HostName=IoTGroup1StandardHub.azure-devices.net;DeviceId=dev001;SharedAccessKey=otK31C84fisZusMhtB4hQz4+EuMBcTxQCiJM/sIbbgU="
+imageFileName = "imagefile.jpg"
 
 async def main():
 
@@ -71,10 +74,8 @@ async def main():
                 # For image encoding
                 objectDetected=image.copy()
                 objectDetected=objectDetected[startY:endY, startX:endX]
-                outfile="{}{}{}.jpg".format(i, CLASSES[idx], log['time'])
-                cv2.imwrite(outfile, objectDetected)
-                convertfile(i, CLASSES[idx], log['time'])
-                #os.remove(outfile)
+                cv2.imwrite(imageFileName, objectDetected)
+                #log['images'].append("data:image/jpeg;base64," + str(convertfile(imageFileName)))
 
                 focalLength=900
                 width=endX - startX
@@ -110,10 +111,6 @@ async def main():
                 y=startY - 15 if startY - 15 > 15 else startY + 15
                 cv2.putText(image, label, (startX, y),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.3, COLORS[idx], 1)
-
-                # TODO: Add actual image data
-                log["images"].append(
-                    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4QPMRXhpZgAASUkqAAgAAAAIAA4BAgCVAAAAbgAAAA8BAgAGAAAABAEAABABAgAPAAAACgEAADsBAgA")
 
         if(log['hazardCount'] == 0):
             resetWarnings(warningSent)

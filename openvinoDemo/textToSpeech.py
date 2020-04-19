@@ -1,15 +1,21 @@
 import subprocess
 from objects import *
+from rmDir import rmDir
 
 # This script creates wav files required for hazard notification
 # Creates 3 folders: objectsWav, numbersWav, warningsWav
+# If theses already exists, it is overwritten
+
+# usage:
+# from textToSpeech import *
+# createWavFiles()
 
 # requires libespeak and espeak installed
 # sudo apt-get install espeak
 # sudo apt-get install -y libespeak-dev
 # converts to wav file
 
-warnings=["Incoming", "Warning", "Hazard", "Approaching", "Metres Away", "And", "Detected", "No"]
+warnings=["Incoming", "Warning", "Hazard", "Approaching", "Metres Away", "And", "Detected", "No", "Danger"]
 
 def textToWav(text, folder):
     subprocess.call(["espeak", "-w " + folder + "/" + text + ".wav", text])
@@ -19,22 +25,30 @@ def makeFolder(foldername):
 
 def objectWavFiles():
     objects=CLASSES
-
+    rmDir("objectsWav")  
     makeFolder("objectsWav")
     for object in objects:
         textToWav(object, "objectsWav")
 
 def numberWavFiles():
+    rmDir("numbersWav")  
     makeFolder("numbersWav")
-    for num in range(0,11):
+    textToWav("Hundred", "numbersWav")
+    for num in range(0,20):
         textToWav(str(num), "numbersWav")
-        textToWav(str(num*10), "numbersWav")
+        if num < 10:
+            textToWav(str(num*10), "numbersWav")
+    
         
 def warningWavFiles():
+    warnings=["Incoming", "Warning", "Hazard", "Approaching", "Metres Away", "And", "Detected", "No", "Danger"]
+    rmDir("warningWav")  
     makeFolder("warningWav")
     for warning in warnings:
         textToWav(warning, "warningWav")     
-    
-objectWavFiles()
-numberWavFiles()
-warningWavFiles()
+
+def createWavFiles():
+    objectWavFiles()
+    numberWavFiles()
+    warningWavFiles()
+

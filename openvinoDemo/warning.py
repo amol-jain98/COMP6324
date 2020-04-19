@@ -7,7 +7,7 @@ from datetime import datetime
 def makeWarningMsg(objectCount, obj, distanceFromCamera):
     #eg: warning 3 cars detected 5 metres away
     text = ("warning", objectCount[obj], obj, "detected", distanceFromCamera, "metres away" )
-    combineWavFiles(obj, objectCount[obj]/100, distanceFromCamera)
+    combineWavFiles(obj, objectCount[obj], distanceFromCamera//100)
  
 #send warning 
 def sendWarning(distanceFromUser, obj, warningCount, objectCount):

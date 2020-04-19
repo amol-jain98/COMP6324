@@ -27,11 +27,3 @@ def inConfidenceRange(obj, confidence):
     else:
         return False
 
-#find out how many hazards there are altogether
-def totalHazardCount(objectCount):
-    total = 0
-    for obj in objectCount:
-        total += objectCount[obj]
-    return total
-    
-    

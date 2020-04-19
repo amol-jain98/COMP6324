@@ -35,9 +35,10 @@ def objectWavFiles():
 def numberWavFiles():
     rmDir("numbersWav")  
     makeFolder("numbersWav")
-    for num in range(0,11):
+    for num in range(0,20):
         textToWav(str(num), "numbersWav")
         textToWav(str(num*10), "numbersWav")
+    
         
 def warningWavFiles():
     warnings=["Incoming", "Warning", "Hazard", "Approaching", "Metres Away", "And", "Detected", "No", "Danger"]

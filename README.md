@@ -6,8 +6,18 @@ Ensure that Devices->Webcam has an input
 
 Note: Focal Length is different for each camera
 
-textToSpeech.py requires libespeak and espeak installed:
 
+## Packages required for:
+
+### textToSpeech.py 
+```
 sudo apt-get install espeak
 
 sudo apt-get install -y libespeak-dev
+```
+### warning.py (merging wav files)
+```
+sudo apt-get install python-pip
+
+pip3 install pydub
+```

@@ -13,6 +13,7 @@ from objects import *
 from warning import *
 from time import sleep
 from datetime import datetime
+from playsound import playsound
 from azure.iot.device.aio import IoTHubDeviceClient
 
 # The azure device connection string
@@ -93,11 +94,11 @@ async def main():
 
                 # send warning when obj is detected at less than 10m away & only send once for each threshold
                 if((distance <= 1000) and (warningSent[str(findThreshold(distance))] == False)):
-                    sendWarning(distance, object, warningSent, hazardCount)
+                    playsound(sendWarning(distance, object, warningSent, hazardCount))
 
                 # send warning when another obj is detected
                 if((distance <= 1000) and (prevTotalHazards > 0) and (log['hazardCount'] > prevTotalHazards)):
-                    sendWarning(distance, object, warningSent, hazardCount)
+                    playsound(sendWarning(distance, object, warningSent, hazardCount))
                     
                 # TODO: change to warning function
                 if (distance < 250):

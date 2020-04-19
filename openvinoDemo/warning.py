@@ -7,7 +7,7 @@ from datetime import datetime
 def makeWarningMsg(objectCount, obj, distanceFromCamera):
     #eg: warning 3 cars detected 5 metres away
     text = ("warning", objectCount[obj], obj, "detected", distanceFromCamera, "metres away" )
-    combineWavFiles(obj, objectCount[obj], distanceFromCamera//100)
+    return combineWavFiles(obj, objectCount[obj], distanceFromCamera//100)
  
 #send warning 
 def sendWarning(distanceFromUser, obj, warningCount, objectCount):
@@ -46,5 +46,6 @@ def combineWavFiles(object, objectCount, distanceAway):
     distance = AudioSegment.from_wav("./numbersWav/" + str(distanceAway) + ".wav")
 
     customMsg = warning + objCount + obj + detected + distance + metresAway
-    customMsg.export("customWarning" + now + ".wav", format="wav")
-        
+    filename = "customWarning" + now + ".wav"
+    customMsg.export(filename, format="wav")
+    return filename

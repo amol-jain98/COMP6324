@@ -74,7 +74,7 @@ async def main():
                 outfile="{}{}{}.jpg".format(i, CLASSES[idx], log['time'])
                 cv2.imwrite(outfile, objectDetected)
                 convertfile(i, CLASSES[idx], log['time'])
-                os.remove(outfile)
+                #os.remove(outfile)
 
                 focalLength=900
                 width=endX - startX

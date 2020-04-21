@@ -1,2 +1,3 @@
 MobileNetSSD_deploy.*
 __pycache__
+venv

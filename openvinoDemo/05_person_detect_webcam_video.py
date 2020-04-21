@@ -7,24 +7,26 @@ import json
 import base64
 import os
 import io
+from threading import Thread
 from converter import *
 from distance import *
 from objects import *
 from warning import *
 from time import sleep
 from datetime import datetime
-from playsound import playsound
 from azure.iot.device.aio import IoTHubDeviceClient
 
 # The azure device connection string
 connection_string = "HostName=IoTGroup1StandardHub.azure-devices.net;DeviceId=dev001;SharedAccessKey=otK31C84fisZusMhtB4hQz4+EuMBcTxQCiJM/sIbbgU="
 imageFileName = "imagefile.jpg"
+from textToSpeech import *
+createWavFiles()
 
 async def main():
 
     # Device Initialisation
     device_client=IoTHubDeviceClient.create_from_connection_string(connection_string)
-    await device_client.connect()
+    # await device_client.connect()
     webcam=cv2.VideoCapture(0)
     # Allow time for the camera to initialise
     sleep(2)
@@ -60,7 +62,8 @@ async def main():
         hazardCount = objectCount
         # Log to send out to azure
         log = {'date': datetime.now().strftime("%d/%m/%Y"),
-                                  'time': datetime.now().strftime("%H:%M:%S"), 'images': [], 'hazardCount': 0, 'objectCount': objectCount}
+                                  'time': datetime.now().strftime("%H:%M:%S"), 'images': [], 'hazardCount': 0}
+        log.update(objectCount)
 
         for i in np.arange(0, detections.shape[2]):
             confidence=detections[0, 0, i, 2]
@@ -75,15 +78,15 @@ async def main():
                 # For image encoding
                 objectDetected=image.copy()
                 objectDetected=objectDetected[startY:endY, startX:endX]
-                cv2.imwrite(imageFileName, objectDetected)
+                #cv2.imwrite(imageFileName, objectDetected)
                 #log['images'].append("data:image/jpeg;base64," + str(convertfile(imageFileName)))
 
-                focalLength=900
+                focalLength=800
                 width=endX - startX
                 distance=distanceToCamera(object, focalLength, width)
                 
                 # Count the number of objects in the frame
-                log['objectCount'][object] += 1            
+                objectCount[object] += 1            
 
                 # Add detection to our count of objects if object is near
                 if (distance < 1000):
@@ -93,12 +96,12 @@ async def main():
                 log['hazardCount'] = sum(hazardCount.values())
 
                 # send warning when obj is detected at less than 10m away & only send once for each threshold
-                if((distance <= 1000) and (warningSent[str(findThreshold(distance))] == False)):
-                    playsound(sendWarning(distance, object, warningSent, hazardCount))
+                if((distance <= 500) and (warningSent[str(findThreshold(distance))] == False)):
+                  sendWarning(distance, object, warningSent, hazardCount)
 
                 # send warning when another obj is detected
-                if((distance <= 1000) and (prevTotalHazards > 0) and (log['hazardCount'] > prevTotalHazards)):
-                    playsound(sendWarning(distance, object, warningSent, hazardCount))
+                if((distance <= 500) and (prevTotalHazards > 0) and (log['hazardCount'] > prevTotalHazards)):
+                    sendWarning(distance, object, warningSent, hazardCount)
                     
                 # TODO: change to warning function
                 if (distance < 250):
@@ -133,11 +136,15 @@ async def main():
                 # We need to send out the data to microsoft azure as json
                 json_body=json.dumps(log_buffer)
                 log_buffer=[]
-                await device_client.send_message(json_body)
+                # await device_client.send_message(json_body)
                 print("sent to azure")
 
         if (key == ord('q')):
-            await device_client.disconnect()
+            #await device_client.disconnect()
+            shutil.rmtree('warnings')
+            shutil.rmtree('numbersWav')
+            shutil.rmtree('objectsWav')
+            shutil.rmtree('warningWav')
             break
 
 

@@ -16,14 +16,9 @@ def initializationMeasurements(objectIdentity):
 
 # Set the confidence range for different objs
 def inConfidenceRange(obj, confidence):
-    if ((confidence > 0.4) and (obj == 'person' or obj == 'car' or obj == 'bicycle')):
-        return True
-    elif (confidence > 0.5 and obj == 'motorbike') or (confidence > 0.7 and (obj == 'train' or obj == 'bus')):
-        return True
-    elif ((confidence > 0.6) and (obj == 'bottle' or obj == 'chair' or obj == 'sofa' or obj == 'diningtable' or obj == 'tvmonitor')):
-        return True
-    elif ((confidence > 0.4) and (obj == 'background' or obj == 'aeroplane' or obj == 'bird' or obj == 'boat' or obj == 'cat' or obj == 'cow' or obj == 'dog' or obj == 'horse' or obj == 'pottedplant' or obj == 'sheep')):
-        return True
-    else:
-        return False
+    confidences = {'person': 0.6, 'car': 0.7, 'bicycle': 0.6, 'motorbike': 0.6, 'train': 0.9, 'bus': 0.7, 'bottle': 0.8, 'chair': 0.8, 'sofa': 0.8, 'diningtable': 0.9, 'tvmonitor': 0.9, 'background': 0.9, 'aeroplane': 0.9}
+
+    if obj in confidences.keys():
+        return confidence > confidences[obj]
+    return False
 

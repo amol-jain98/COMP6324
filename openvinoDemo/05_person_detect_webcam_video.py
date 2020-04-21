@@ -7,6 +7,7 @@ import json
 import base64
 import os
 import io
+import shutil
 from threading import Thread
 from converter import *
 from distance import *

@@ -26,9 +26,9 @@ createWavFiles()
 async def main():
 
     # Device Initialisation
-    device_client=IoTHubDeviceClient.create_from_connection_string(connection_string)
+    device_client = IoTHubDeviceClient.create_from_connection_string(connection_string)
     # await device_client.connect()
-    webcam=cv2.VideoCapture(0)
+    webcam = cv2.VideoCapture(0)
     # Allow time for the camera to initialise
     sleep(2)
     COLORS=np.random.uniform(0, 255, size=(len(CLASSES), 3))
@@ -36,13 +36,13 @@ async def main():
     net=cv2.dnn.readNetFromCaffe(
         'MobileNetSSD_deploy.prototxt.txt', 'MobileNetSSD_deploy.caffemodel')
     log_buffer=[]
-    iterations=1
-    totalTime=0.0
-    wflag=0
+    iterations = 1
+    totalTime = 0.0
+    wflag = 0
 
-    warningSent={'1000': False, '500': False, '100': False}
-    i=None
-    prevTotalHazards=0
+    warningSent = {'1000': False, '500': False, '100': False}
+    i = None
+    prevTotalHazards = 0
 
     while True:
         sleep(0.1)
@@ -56,35 +56,36 @@ async def main():
         detections = net.forward()
         end = time.time()
         totalTime = totalTime + (end - start)
-        iterations = iterations + 1
+        iterations += 1
 
         # Keep a count of the number of objects in the image, to be used later for TTS
         objectCount = {newList: 0 for newList in CLASSES}
         hazardCount = objectCount
         # Log to send out to azure
         log = {'date': datetime.now().strftime("%d/%m/%Y"),
-                                  'time': datetime.now().strftime("%H:%M:%S"), 'images': [], 'hazardCount': 0}
+                                  'time': datetime.now().strftime("%H:%M:%S"),
+                                  'images': [], 'hazardCount': 0}
         log.update(objectCount)
 
         for i in np.arange(0, detections.shape[2]):
-            confidence=detections[0, 0, i, 2]
-            idx=int(detections[0, 0, i, 1])
-
+            confidence = detections[0, 0, i, 2]
+            idx = int(detections[0, 0, i, 1])
             object=CLASSES[idx]
+
             if (inConfidenceRange(object, confidence)):
-                box=detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-                (startX, startY, endX, endY)=box.astype("int")
-                kernel=np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])/9
+                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                (startX, startY, endX, endY) = box.astype("int")
+                kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]]) / 9
 
                 # For image encoding
-                objectDetected=image.copy()
-                objectDetected=objectDetected[startY:endY, startX:endX]
+                objectDetected = image.copy()
+                objectDetected = objectDetected[startY:endY, startX:endX]
                 #cv2.imwrite(imageFileName, objectDetected)
                 #log['images'].append("data:image/jpeg;base64," + str(convertfile(imageFileName)))
 
-                focalLength=800
-                width=endX - startX
-                distance=distanceToCamera(object, focalLength, width)
+                focalLength = 800
+                width = endX - startX
+                distance = distanceToCamera(object, focalLength, width)
                 
                 # Count the number of objects in the frame
                 objectCount[object] += 1            
@@ -97,19 +98,15 @@ async def main():
                 log['hazardCount'] = sum(hazardCount.values())
 
                 # send warning when obj is detected at less than 10m away & only send once for each threshold
-                if((distance <= 500) and (warningSent[str(findThreshold(distance))] == False)):
+                if ((distance <= 500) and 
+                    ((not warningSent[str(findThreshold(distance))]) or 
+                    ((prevTotalHazards > 0) and (log['hazardCount'] > prevTotalHazards)))):
                   sendWarning(distance, object, warningSent, hazardCount)
-
-                # send warning when another obj is detected
-                if((distance <= 500) and (prevTotalHazards > 0) and (log['hazardCount'] > prevTotalHazards)):
-                    sendWarning(distance, object, warningSent, hazardCount)
                     
                 # TODO: change to warning function
                 if (distance < 250):
                     # Number of hazards detected in frame
                     log['hazardCount'] += 1
-
-                # TODO: Check distance, then if within some threshold, play soundbyte
 
                 cv2.rectangle(image, (startX, startY), (endX, endY),
                     COLORS[idx], 2)
@@ -117,13 +114,13 @@ async def main():
                 cv2.putText(image, label, (startX, y),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.3, COLORS[idx], 1)
 
-        if(log['hazardCount'] == 0):
+        if (log['hazardCount'] == 0):
             resetWarnings(warningSent)
         # record no. of hazards from previous img
-        prevTotalHazards=log['hazardCount']
+        prevTotalHazards = log['hazardCount']
 
         cv2.imshow("Output", image)
-        key=cv2.waitKey(1) & 0xFF
+        key = cv2.waitKey(1) & 0xFF
 
         async def send_data(data):
             await device_client.send_message(data)
@@ -135,8 +132,8 @@ async def main():
             else:
 
                 # We need to send out the data to microsoft azure as json
-                json_body=json.dumps(log_buffer)
-                log_buffer=[]
+                json_body = json.dumps(log_buffer)
+                log_buffer = []
                 # await device_client.send_message(json_body)
                 print("sent to azure")
 

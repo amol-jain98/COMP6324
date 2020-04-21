@@ -21,10 +21,6 @@ class SoundPlayer :
         self.curpath = None
         self.current = None
 
-    def __del__(self) :
-        print("__del__ : Waiting for last play")
-        #self.wait()
-
     def play(self, path) :
         if self.current :
             if self.current.poll() is None :

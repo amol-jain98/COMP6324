@@ -48,6 +48,7 @@ def warningWavFiles():
         textToWav(warning, "warningWav")     
 
 def createWavFiles():
+    subprocess.call(["mkdir", "warnings"])
     objectWavFiles()
     numberWavFiles()
     warningWavFiles()

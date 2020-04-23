@@ -2,18 +2,22 @@ from distance import *
 from pydub import *
 import time
 from datetime import datetime
+from playsound import playsound
+from pyplay import SoundPlayer
 
 #creates custom warning msg
 def makeWarningMsg(objectCount, obj, distanceFromCamera):
     #eg: warning 3 cars detected 5 metres away
-    text = ("warning", objectCount[obj], obj, "detected", distanceFromCamera, "metres away" )
-    combineWavFiles(obj, objectCount[obj], distanceFromCamera//100)
+    text = (objectCount[obj], obj, distanceFromCamera, "meters" )
+    return combineWavFiles(obj, objectCount[obj], distanceFromCamera//100)
  
 #send warning 
 def sendWarning(distanceFromUser, obj, warningCount, objectCount):
+    player = SoundPlayer()
     distance = findThreshold(distanceFromUser)
-    makeWarningMsg(objectCount, obj, distance)
+    filename = makeWarningMsg(objectCount, obj, distance)
     warningCount[str(distance)] = True
+    player.play(filename)
     
 #defines hazard thresholds
 def findThreshold(distanceFromUser):
@@ -37,14 +41,13 @@ def combineWavFiles(object, objectCount, distanceAway):
     now = datetime.now().strftime("%Y-%m-%d,%H:%M")
     
     #eg: warning 3 cars detected 5 metres away
-    warning = AudioSegment.from_wav("./warningWav/Warning.wav")
-    detected = AudioSegment.from_wav("./warningWav/Detected.wav")
-    metresAway = AudioSegment.from_wav("./warningWav/Metres Away.wav")
+    metres = AudioSegment.from_wav("./warningWav/Metres Away.wav")
     
     objCount = AudioSegment.from_wav("./numbersWav/" + str(objectCount) + ".wav")
     obj = AudioSegment.from_wav("./objectsWav/" + object + ".wav")
     distance = AudioSegment.from_wav("./numbersWav/" + str(distanceAway) + ".wav")
 
-    customMsg = warning + objCount + obj + detected + distance + metresAway
-    customMsg.export("customWarning" + now + ".wav", format="wav")
-        
+    customMsg = objCount + obj + distance + metres
+    filename = "warnings/customWarning" + now + ".wav"
+    customMsg.export(filename, format="wav")
+    return filename

@@ -1,0 +1,15 @@
+asyncio==3.4.3
+azure-iot-device==2.1.1
+certifi==2020.4.5.1
+chardet==3.0.4
+idna==2.9
+janus==0.4.0
+numpy==1.18.2
+paho-mqtt==1.5.0
+pydub==0.23.1
+PySocks==1.7.1
+requests==2.23.0
+requests-unixsocket==0.2.0
+six==1.14.0
+transitions==0.8.1
+urllib3==1.25.9

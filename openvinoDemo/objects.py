@@ -8,9 +8,9 @@ def initializationMeasurements(objectIdentity):
     # The known width of the objects in centimeters
     knownWidth = {'car': 185, 'person': 40, 'bicycle': 40, 'motorbike': 40, 
                     'train': 300, 'bus': 300, 'background': 0, 'aeroplane': 6000, 'bird': 22, 'boat': 185,
-	    'bottle': 7, 'cat': 18, 'chair': 38, 'cow': 0, 'diningtable': 0,
-	    'dog': 0, 'horse': 0, 'pottedplant': 0, 'sheep': 0,
-	    'sofa': 0, 'tvmonitor': 0 }      
+	    'bottle': 7, 'cat': 18, 'chair': 38, 'cow': 100, 'diningtable': 183,
+	    'dog': 18, 'horse': 100, 'pottedplant': 10, 'sheep': 100,
+	    'sofa': 200, 'tvmonitor': 110 }      
     return knownWidth[objectIdentity]	
 
 

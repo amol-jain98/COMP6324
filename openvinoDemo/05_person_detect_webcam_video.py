@@ -118,6 +118,8 @@ async def main():
             resetWarnings(warningSent)
         # record no. of hazards from previous img
         prevTotalHazards = log['hazardCount']
+        for key, value in hazardCount.items():
+	        log[key] = value
 
         cv2.imshow("Output", image)
         key = cv2.waitKey(1) & 0xFF
